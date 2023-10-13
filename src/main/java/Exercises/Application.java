@@ -162,7 +162,7 @@ public class Application {
                                 if (Arrays.asList(obj).size() == 6) {
                                     return new Book(Integer.parseInt(obj[0]), obj[1], LocalDate.parse(obj[2]), Integer.parseInt(obj[3]), obj[4], obj[5]);
                                 } else {
-                                    return new Magazine(Integer.parseInt(obj[0]), obj[1], LocalDate.parse(obj[2]), Integer.parseInt(obj[3]), Period.WEEKLY);
+                                    return new Magazine(Integer.parseInt(obj[0]), obj[1], LocalDate.parse(obj[2]), Integer.parseInt(obj[3]), Period.valueOf(obj[4]));
                                 }
                             }).toList();
                             loadedlist.forEach(System.out::println);
