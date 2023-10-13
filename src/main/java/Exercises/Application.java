@@ -1,14 +1,16 @@
 package Exercises;
 
 import com.github.javafaker.Faker;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
 
 public class Application {
-
 
     public static void main(String[] args) {
         Supplier<Book> bookSupplier = () -> {
@@ -99,7 +101,7 @@ public class Application {
                         System.out.println("write the date of publish to search in the format 'yyyy-MM-dd' ");
                         LocalDate searchdate = LocalDate.parse(input.nextLine());
                         try {
-                            List<Readable> searchresult = archive.stream().filter(readable -> readable.getPublished() == searchdate).findAny().stream().toList();
+                            List<Readable> searchresult = archive.stream().filter(readable -> readable.getPublished().equals(searchdate)).findAny().stream().toList();
                             searchresult.forEach(System.out::println);
                         } catch (NoSuchElementException ex) {
                             System.err.println("no book found");
@@ -116,6 +118,40 @@ public class Application {
                             System.err.println("no magazine found");
                         }
                         break;
+                    }
+                    case 6: {
+                        try {
+                            File file = new File("archive.txt");
+                            String toWrite = "";
+                            for (Readable readable : archive) {
+                                if (readable instanceof Book) {
+                                    toWrite += readable.getISBN() + "@" + readable.getTitle() + "@" + readable.getPublished() + "@" + readable.getPages() + "@" + ((Book) readable).getAuthor() + "@" + ((Book) readable).getGenre() + "#";
+                                } else if (readable instanceof Magazine) {
+                                    toWrite += readable.getISBN() + "@" + readable.getTitle() + "@" + readable.getPublished() + "@" + readable.getPages() + "@" + ((Magazine) readable).getPeriod() + "#";
+                                }
+                                FileUtils.writeStringToFile(file, toWrite, "UTF-8");
+                            }
+                        } catch (IOException ex) {
+                            System.err.println("failed to write");
+                        }
+                    }
+                    case 7: {
+                        try {
+                            File file = new File("archive.txt");
+                            String fileString = FileUtils.readFileToString(file, "UTF-8");
+                            List<String> splitted = Arrays.asList(fileString.split("#"));
+                            List<Readable> loadedlist = splitted.stream().map(string -> {
+                                String[] obj = string.split("@");
+                                if (Arrays.asList(obj).size() == 6) {
+                                    return new Book(Integer.parseInt(obj[0]), obj[1], LocalDate.parse(obj[2]), Integer.parseInt(obj[3]), obj[4], obj[5]);
+                                } else {
+                                    return new Magazine(Integer.parseInt(obj[0]), obj[1], LocalDate.parse(obj[2]), Integer.parseInt(obj[3]), Period.WEEKLY);
+                                }
+                            }).toList();
+                            loadedlist.forEach(System.out::println);
+                        } catch (IOException ex) {
+                            System.err.println("failed to load");
+                        }
                     }
                 }
             } catch (Exception ex) {
