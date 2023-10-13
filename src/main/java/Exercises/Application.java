@@ -37,8 +37,8 @@ public class Application {
         int selector = 9;
         while (selector != 0) {
             try {
-                System.out.println("********************************LIST********************************");
-                archive.forEach(System.out::println);
+                //System.out.println("********************************LIST********************************");
+                //archive.forEach(System.out::println);
                 System.out.println("********************************ARCHIVE********************************");
                 System.out.println("write 1 to add an element, 2 to remove an element with ISBN, 3 to search an element with ISBN");
                 System.out.println(" 4 to search an element with date of publish, 5 to search an element with author");
@@ -47,6 +47,7 @@ public class Application {
                 if (selector > 7) throw new Exception();
                 switch (selector) {
                     case 1: {
+                        try {
                         System.out.println("write 1 to add a book, 2 to add a magazine");
                         int discrim = Integer.parseInt(input.nextLine());
                         System.out.println("write the ISBN");
@@ -77,45 +78,59 @@ public class Application {
                             } else System.out.println("comando non riconosciuto");
                             Magazine newMag = new Magazine(ISBN, title, date, pages, tempP);
                             archive.add(newMag);
+                        }} catch (Exception ex) {
+                            System.err.println("generic error during element creation");
                         }
                         break;
                     }
                     case 2: {
-                        System.out.println("write the ISBN to delete");
-                        int isbn = Integer.parseInt(input.nextLine());
-                        archive.removeIf(readable -> readable.getISBN() == isbn);
+                        try {
+                            System.out.println("write the ISBN to delete");
+                            int isbn = Integer.parseInt(input.nextLine());
+                            archive.removeIf(readable -> readable.getISBN() == isbn);
+                        } catch (NoSuchElementException ex) {
+                            System.err.println("cannot find the element to remove");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during element removal");
+                        }
                         break;
                     }
                     case 3: {
+                        try {
                         System.out.println("write the ISBN to search");
                         int isbn = Integer.parseInt(input.nextLine());
-                        try {
                             Readable searchresult = archive.stream().filter(readable -> readable.getISBN() == isbn).findFirst().get();
                             System.out.println(searchresult);
                         } catch (NoSuchElementException ex) {
-                            System.err.println("no book found");
+                            System.err.println("no element found");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during search by ISBN");
                         }
                         break;
                     }
                     case 4: {
+                        try {
                         System.out.println("write the date of publish to search in the format 'yyyy-MM-dd' ");
                         LocalDate searchdate = LocalDate.parse(input.nextLine());
-                        try {
                             List<Readable> searchresult = archive.stream().filter(readable -> readable.getPublished().equals(searchdate)).findAny().stream().toList();
                             searchresult.forEach(System.out::println);
                         } catch (NoSuchElementException ex) {
                             System.err.println("no book found");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during search by localDate");
                         }
                         break;
                     }
                     case 5: {
+                        try {
                         System.out.println("write the author to search");
                         String author = input.nextLine();
-                        try {
-                            List<Readable> searchresult = archive.stream().filter(readable -> readable instanceof Book).filter(book -> ((Book) book).getAuthor().equals(author)).findAny().stream().toList();
+                            List<Readable> searchresult = archive.stream().filter(readable -> readable instanceof Book).filter(book -> ((Book) book).getAuthor().toLowerCase().trim().equals(author.toLowerCase().trim())).findAny().stream().toList();
                             System.out.println(searchresult);
                         } catch (NoSuchElementException ex) {
                             System.err.println("no magazine found");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during search by author");
                         }
                         break;
                     }
@@ -133,6 +148,8 @@ public class Application {
                             }
                         } catch (IOException ex) {
                             System.err.println("failed to write");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during writing");
                         }
                     }
                     case 7: {
@@ -151,6 +168,8 @@ public class Application {
                             loadedlist.forEach(System.out::println);
                         } catch (IOException ex) {
                             System.err.println("failed to load");
+                        } catch (Exception ex) {
+                            System.err.println("generic error during loading");
                         }
                     }
                 }
