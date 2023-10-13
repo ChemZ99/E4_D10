@@ -18,4 +18,11 @@ public class Magazine extends Readable {
     public void setPeriod(Period period) {
         this.period = period;
     }
+
+    @Override
+    public String toString() {
+        return "Magazine{" +
+                "period=" + period +
+                "} " + super.toString();
+    }
 }

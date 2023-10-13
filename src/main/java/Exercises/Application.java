@@ -37,7 +37,7 @@ public class Application {
         while (selector != 0) {
             try {
         System.out.println("********************************ARCHIVE********************************");
-        System.out.println("write 1 to add an element, 2 to remove an element, 3 to search an element with ISBN");
+        System.out.println("write 1 to add an element, 2 to remove an element with ISBN, 3 to search an element with ISBN");
         System.out.println(" 4 to search an element with date of publish, 5 to search an element with author");
         System.out.println(" 6 to save the archive, 7 to load the archive from an external file, 0 to exit");
         selector = Integer.parseInt(input.nextLine());
@@ -75,6 +75,29 @@ public class Application {
                     Magazine newMag = new Magazine(ISBN,title,date,pages,tempP);
                     magazineList.add(newMag);
                 }
+            }
+            case 2: {
+                System.out.println("write the ISBN to delete");
+                int isbn = Integer.parseInt(input.nextLine());
+                bookList.removeIf(book -> book.getISBN() == isbn);
+                magazineList.removeIf(magazine -> magazine.getISBN() == isbn);
+            }
+            case 3: {
+                System.out.println("write the ISBN to search");
+                int isbn = Integer.parseInt(input.nextLine());
+                try {
+                    Book searchresult = bookList.stream().filter(book -> book.getISBN() == isbn).findFirst().get().;
+                    System.out.println(searchresult);
+                } catch (NoSuchElementException ex) {
+                    System.err.println("no book found");
+                }
+                try {
+                    Magazine searchresult2 = magazineList.stream().filter(magazine -> magazine.getISBN() == isbn).findFirst().get();
+                    System.out.println(searchresult2);
+                } catch (NoSuchElementException ex){
+                    System.err.println("no magazine found");
+                }
+
             }
         }
     }catch (Exception ex) {

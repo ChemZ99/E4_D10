@@ -46,4 +46,14 @@ public abstract class Readable {
     public void setPages(int pages) {
         this.pages = pages;
     }
+
+    @Override
+    public String toString() {
+        return "Readable{" +
+                "ISBN=" + ISBN +
+                ", title='" + title + '\'' +
+                ", published=" + published +
+                ", pages=" + pages +
+                '}';
+    }
 }

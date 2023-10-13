@@ -27,4 +27,12 @@ public class Book extends Readable{
     public void setGenre(String genre) {
         this.genre = genre;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "author='" + author + '\'' +
+                ", genre='" + genre + '\'' +
+                "} " + super.toString();
+    }
 }
